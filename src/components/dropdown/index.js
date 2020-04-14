@@ -481,6 +481,7 @@ export default class Dropdown extends PureComponent {
   }
 
   updateInputTitle() {
+    let { value } = this.state;
     let {
       data,
       renderBase,
@@ -504,8 +505,10 @@ export default class Dropdown extends PureComponent {
     title = null == title || 'string' === typeof title?
       title:
       String(title);
+    if(this.txRef.current) {
+      this.txRef.current.setValue(title)  
+    }
 
-    this.txRef.current.setValue(title)
   }
 
   renderBase(props) {
