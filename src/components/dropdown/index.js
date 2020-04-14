@@ -155,6 +155,8 @@ export default class Dropdown extends PureComponent {
     useNativeDriver: PropTypes.bool,
   };
 
+  txRef = React.createRef();
+
   constructor(props) {
     super(props);
 
@@ -186,6 +188,10 @@ export default class Dropdown extends PureComponent {
       modal: false,
       value,
     };
+  }
+
+  componentDidUpdate() {
+    this.updateInputTitle();
   }
 
   componentWillReceiveProps({ value }) {
@@ -474,6 +480,34 @@ export default class Dropdown extends PureComponent {
     return `${index}-${valueExtractor(item, index)}`;
   }
 
+  updateInputTitle() {
+    let {
+      data,
+      renderBase,
+      labelExtractor,
+    } = this.props;
+
+    let index = this.selectedIndex();
+    let title;
+    if (~index) {
+      title = labelExtractor(data[index], index);
+    }
+
+    if (null == title) {
+      title = value;
+    }
+
+    if ('function' === typeof renderBase) {
+      return;
+    }
+
+    title = null == title || 'string' === typeof title?
+      title:
+      String(title);
+
+    this.txRef.current.setValue(title)
+  }
+
   renderBase(props) {
     let { value } = this.state;
     let {
@@ -505,6 +539,7 @@ export default class Dropdown extends PureComponent {
 
     return (
       <TextField
+        ref={this.txRef}
         label=''
         labelHeight={dropdownOffset.top - Platform.select({ ios: 1, android: 2 })}
 
